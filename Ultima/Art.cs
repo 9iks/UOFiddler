@@ -39,7 +39,7 @@ namespace Ultima
         {
             if (GetIdxLength() >= 0x13FDC)
             {
-                return 0xFFFF;
+                return 0xFFDC;
             }
 
             if (GetIdxLength() == 0xC000)
@@ -570,7 +570,7 @@ namespace Ultima
                 using (var binidx = new BinaryWriter(memidx))
                 using (var binmul = new BinaryWriter(memmul))
                 {
-                    for (int index = 0; index < GetIdxLength(); index++)
+                    for (int index = 0; index <= GetIdxLength(); index++)
                     {
                         Files.FireFileSaveEvent();
                         if (_cache[index] == null)
