@@ -66,7 +66,13 @@ namespace UoFiddler.Controls.UserControls
         /// </summary>
         public void ChangeTileSize()
         {
-            ItemsTileView.TileSize = new Size(Options.ArtItemSizeWidth, Options.ArtItemSizeHeight);
+            var newSize = new Size(Options.ArtItemSizeWidth, Options.ArtItemSizeHeight);
+            if (ItemsTileView.TileSize == newSize)
+            {
+                return;
+            }
+
+            ItemsTileView.TileSize = newSize;
             ItemsTileView.Invalidate();
 
             if (_selectedGraphicIdId != -1)
@@ -154,6 +160,8 @@ namespace UoFiddler.Controls.UserControls
             {
                 Plugin.PluginEvents.FireModifyItemShowContextMenuEvent(TileViewContextMenuStrip);
             }
+
+            ChangeTileSize();
 
             _showFreeSlots = false;
             showFreeSlotsToolStripMenuItem.Checked = false;
