@@ -323,7 +323,68 @@ namespace UoFiddler.Controls.UserControls.TileView
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // Handling control keys so we can change focus with keys
-            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Left || keyData == Keys.Right)
+
+            if (keyData == Keys.Home || keyData == Keys.End)
+            {
+                if (_focusIndex > -1)
+                {
+                    switch (keyData)
+                    {
+                        case Keys.Home:
+                            ScrollToItem(0);
+                            FocusIndex = GetVisibleIndices(Bounds)[0];
+                            break;
+                        case Keys.End:
+                            var lastItem = VirtualListSize - 1;
+                            ScrollToItem(lastItem);
+                            FocusIndex = lastItem;
+                            break;
+                    }
+                }
+                else if (VirtualListSize > 0) // if there's no focus, focus on first item visible index
+                {
+                    FocusIndex = GetVisibleIndices(Bounds)[0];
+                }
+
+                return true;
+            }
+
+            if (keyData == Keys.PageUp || keyData == Keys.PageDown)
+            {
+                if (_focusIndex > -1)
+                {
+                    int newFocusIndex = _focusIndex;
+                    int visibleRows = GetVisibleIndices(Bounds).Count / _itemsPerRow;
+                    switch (keyData)
+                    {
+                        case Keys.PageUp:
+                            {
+                                if (newFocusIndex - _itemsPerRow > -1)
+                                {
+                                    newFocusIndex -= _itemsPerRow * (visibleRows - 1);
+                                }
+                                break;
+                            }
+                        case Keys.PageDown:
+                            {
+                                if (newFocusIndex + _itemsPerRow < _virtualListSize)
+                                {
+                                    newFocusIndex += _itemsPerRow * (visibleRows - 1);
+                                }
+                                break;
+                            }
+                    }
+
+                    FocusIndex = newFocusIndex;
+                }
+                else if (VirtualListSize > 0) // if there's no focus, focus on first item visible index
+                {
+                    FocusIndex = GetVisibleIndices(Bounds)[0];
+                }
+
+                return true;
+            }
+            else if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Left || keyData == Keys.Right)
             {
                 if (_focusIndex > -1)
                 {
