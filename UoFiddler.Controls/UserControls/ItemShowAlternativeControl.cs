@@ -170,7 +170,7 @@ namespace UoFiddler.Controls.UserControls
 
             int staticLength = Art.GetMaxItemID();
             _itemList = new List<int>(staticLength);
-            for (int i = 0; i < staticLength + 1; ++i)
+            for (int i = 0; i <= staticLength; ++i)
             {
                 if (Art.IsValidStatic(i))
                 {
@@ -644,7 +644,7 @@ namespace UoFiddler.Controls.UserControls
             _showFreeSlots = !_showFreeSlots;
             if (_showFreeSlots)
             {
-                for (int j = 0; j < Art.GetMaxItemID() + 1; ++j)
+                for (int j = 0; j <= Art.GetMaxItemID(); ++j)
                 {
                     if (_itemList.Count > j)
                     {
