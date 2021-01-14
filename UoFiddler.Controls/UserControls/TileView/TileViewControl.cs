@@ -375,7 +375,7 @@ namespace UoFiddler.Controls.UserControls.TileView
                             }
                     }
 
-                    FocusIndex = newFocusIndex;
+                    FocusIndex = newFocusIndex < VirtualListSize ? newFocusIndex : VirtualListSize -1;
                 }
                 else if (VirtualListSize > 0) // if there's no focus, focus on first item visible index
                 {
