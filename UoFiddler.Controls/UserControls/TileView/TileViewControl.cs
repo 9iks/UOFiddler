@@ -345,8 +345,6 @@ namespace UoFiddler.Controls.UserControls.TileView
                 {
                     FocusIndex = GetVisibleIndices(Bounds)[0];
                 }
-
-                return true;
             }
 
             if (keyData == Keys.PageUp || keyData == Keys.PageDown)
@@ -381,8 +379,6 @@ namespace UoFiddler.Controls.UserControls.TileView
                 {
                     FocusIndex = GetVisibleIndices(Bounds)[0];
                 }
-
-                return true;
             }
             else if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Left || keyData == Keys.Right)
             {
@@ -423,8 +419,6 @@ namespace UoFiddler.Controls.UserControls.TileView
                 {
                     FocusIndex = GetVisibleIndices(Bounds)[0];
                 }
-
-                return true;
             }
             else
             {
@@ -434,12 +428,10 @@ namespace UoFiddler.Controls.UserControls.TileView
                     {
                         SelectIndex(_focusIndex);
                     }
-
-                    return true;
                 }
-
-                return base.ProcessCmdKey(ref msg, keyData);
             }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void SelectIndex(int index)

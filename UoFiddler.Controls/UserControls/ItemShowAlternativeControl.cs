@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Ultima;
@@ -323,6 +324,11 @@ namespace UoFiddler.Controls.UserControls
 
         private void UpdateDetail(int graphic)
         {
+            if (_scrolling)
+            {
+                return;
+            }
+
             ItemData item = TileData.ItemTable[graphic];
             Bitmap bit = Art.GetStatic(graphic);
 
@@ -331,9 +337,10 @@ namespace UoFiddler.Controls.UserControls
             int yMin = 0;
             int yMax = 0;
 
+            const int defaultSplitterDistance = 180;
             if (bit == null)
             {
-                splitContainer2.SplitterDistance = 10;
+                splitContainer2.SplitterDistance = defaultSplitterDistance;
                 Bitmap newBit = new Bitmap(DetailPictureBox.Size.Width, DetailPictureBox.Size.Height);
                 using (Graphics newGraph = Graphics.FromImage(newBit))
                 {
@@ -345,7 +352,8 @@ namespace UoFiddler.Controls.UserControls
             }
             else
             {
-                splitContainer2.SplitterDistance = bit.Size.Height + 10;
+                var distance = bit.Size.Height + 10;
+                splitContainer2.SplitterDistance = distance < defaultSplitterDistance ? defaultSplitterDistance : distance;
 
                 Bitmap newBit = new Bitmap(DetailPictureBox.Size.Width, DetailPictureBox.Size.Height);
                 using (Graphics newGraph = Graphics.FromImage(newBit))
@@ -360,31 +368,31 @@ namespace UoFiddler.Controls.UserControls
                 Art.Measure(bit, out xMin, out yMin, out xMax, out yMax);
             }
 
+            var sb = new StringBuilder();
+            sb.AppendLine($"Name: {item.Name}");
+            sb.AppendLine($"Graphic: 0x{graphic:X4}");
+            sb.AppendLine($"Height/Capacity: {item.Height}");
+            sb.AppendLine($"Weight: {item.Weight}");
+            sb.AppendLine($"Animation: {item.Animation}");
+            sb.AppendLine($"Quality/Layer/Light: {item.Quality}");
+            sb.AppendLine($"Quantity: {item.Quantity}");
+            sb.AppendLine($"Hue: {item.Hue}");
+            sb.AppendLine($"StackingOffset/Unk4: {item.StackingOffset}");
+            sb.AppendLine($"Flags: {item.Flags}");
+            sb.AppendLine($"Graphic pixel size width, height: {bit?.Width ?? 0} {bit?.Height ?? 0} ");
+            sb.AppendLine($"Graphic pixel offset xMin, yMin, xMax, yMax: {xMin} {yMin} {xMax} {yMax}");
+
+            if ((item.Flags & TileFlag.Animation) != 0)
+            {
+                Animdata.AnimdataEntry info = Animdata.GetAnimData(graphic);
+                if (info != null)
+                {
+                    sb.AppendLine($"Animation FrameCount: {info.FrameCount} Interval: {info.FrameInterval}");
+                }
+            }
+
             DetailTextBox.Clear();
-            DetailTextBox.AppendText($"Name: {item.Name}\n");
-            DetailTextBox.AppendText($"Graphic: 0x{graphic:X4}\n");
-            DetailTextBox.AppendText($"Height/Capacity: {item.Height}\n");
-            DetailTextBox.AppendText($"Weight: {item.Weight}\n");
-            DetailTextBox.AppendText($"Animation: {item.Animation}\n");
-            DetailTextBox.AppendText($"Quality/Layer/Light: {item.Quality}\n");
-            DetailTextBox.AppendText($"Quantity: {item.Quantity}\n");
-            DetailTextBox.AppendText($"Hue: {item.Hue}\n");
-            DetailTextBox.AppendText($"StackingOffset/Unk4: {item.StackingOffset}\n");
-            DetailTextBox.AppendText($"Flags: {item.Flags}\n");
-            DetailTextBox.AppendText($"Graphic pixel size width, height: {bit?.Width ?? 0} {bit?.Height ?? 0} \n");
-            DetailTextBox.AppendText($"Graphic pixel offset xMin, yMin, xMax, yMax: {xMin} {yMin} {xMax} {yMax}\n");
-
-            if ((item.Flags & TileFlag.Animation) == 0)
-            {
-                return;
-            }
-
-            Animdata.AnimdataEntry info = Animdata.GetAnimData(graphic);
-            if (info != null)
-            {
-                DetailTextBox.AppendText(
-                    $"Animation FrameCount: {info.FrameCount} Interval: {info.FrameInterval}\n");
-            }
+            DetailTextBox.AppendText(sb.ToString());
         }
 
         private void ChangeBackgroundColorToolStripMenuItemDetail_Click(object sender, EventArgs e)
@@ -402,6 +410,7 @@ namespace UoFiddler.Controls.UserControls
         }
 
         private ItemSearchForm _showForm;
+        private bool _scrolling;
 
         private void OnSearchClick(object sender, EventArgs e)
         {
@@ -615,6 +624,11 @@ namespace UoFiddler.Controls.UserControls
 
         private void UpdateToolStripLabels(int graphic)
         {
+            if (_scrolling)
+            {
+                return;
+            }
+
             NameLabel.Text = !Art.IsValidStatic(graphic) ? "Name: FREE" : $"Name: {TileData.ItemTable[graphic].Name}";
             GraphicLabel.Text = $"Graphic: 0x{graphic:X4} ({graphic})";
         }
@@ -956,6 +970,30 @@ namespace UoFiddler.Controls.UserControls
                 TopMost = true
             };
             f.Show();
+        }
+
+        private void ItemsTileView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.PageDown || e.KeyData == Keys.PageUp)
+            {
+                _scrolling = true;
+            }
+        }
+
+        private void ItemsTileView_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData != Keys.PageDown && e.KeyData != Keys.PageUp)
+            {
+                return;
+            }
+
+            _scrolling = false;
+
+            if (ItemsTileView.FocusIndex > 0)
+            {
+                UpdateDetail(_selectedGraphicIdId);
+                UpdateToolStripLabels(_selectedGraphicIdId);
+            }
         }
     }
 }
