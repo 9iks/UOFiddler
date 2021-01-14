@@ -176,7 +176,7 @@ namespace UoFiddler.Controls.UserControls
             this.ItemsTileView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ItemsTileView.FocusIndex = -1;
             this.ItemsTileView.Location = new System.Drawing.Point(0, 0);
-            this.ItemsTileView.MultiSelect = false;
+            this.ItemsTileView.MultiSelect = true;
             this.ItemsTileView.Name = "ItemsTileView";
             this.ItemsTileView.Size = new System.Drawing.Size(471, 284);
             this.ItemsTileView.TabIndex = 0;
