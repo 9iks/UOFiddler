@@ -242,6 +242,27 @@ namespace UoFiddler.Controls.UserControls.TileView
             }
         }
 
+        private const double _defaultOpacityValue = 0.6;
+        private double _tileHighlightOpacity = _defaultOpacityValue;
+
+        [Browsable(true)]
+        [Description("Opacity value for highlight color. Allowed values 0-100% (default 60%).")]
+        [TypeConverter(typeof(OpacityConverter))]
+        [DefaultValue(_defaultOpacityValue)]
+        public double TileHighLightOpacity
+        {
+            get => _tileHighlightOpacity;
+            set
+            {
+                _tileHighlightOpacity = value;
+
+                if (SelectedIndices.Count > 0)
+                {
+                    RedrawItems(SelectedIndices.ToList());
+                }
+            }
+        }
+
         private Color _tileHighlightColor = SystemColors.Highlight;
 
         /// <summary>
@@ -254,6 +275,7 @@ namespace UoFiddler.Controls.UserControls.TileView
             set
             {
                 _tileHighlightColor = value;
+
                 if (SelectedIndices.Count > 0)
                 {
                     RedrawItems(SelectedIndices.ToList());
@@ -373,7 +395,7 @@ namespace UoFiddler.Controls.UserControls.TileView
                             }
                     }
 
-                    FocusIndex = newFocusIndex < VirtualListSize ? newFocusIndex : VirtualListSize -1;
+                    FocusIndex = newFocusIndex < VirtualListSize ? newFocusIndex : VirtualListSize - 1;
                 }
                 else if (VirtualListSize > 0) // if there's no focus, focus on first item visible index
                 {
@@ -422,7 +444,7 @@ namespace UoFiddler.Controls.UserControls.TileView
             }
             else
             {
-                if (keyData == Keys.Space || (keyData & Keys.Space) == Keys.Space && ((keyData & Keys.Shift) == Keys.Shift || (keyData & Keys.Control) == Keys.Control))
+                if (keyData == Keys.Space || ((keyData & Keys.Space) == Keys.Space && ((keyData & Keys.Shift) == Keys.Shift || (keyData & Keys.Control) == Keys.Control)))
                 {
                     if (_focusIndex >= 0)
                     {
@@ -618,14 +640,6 @@ namespace UoFiddler.Controls.UserControls.TileView
                 Rectangle borderRec = new Rectangle(borderPoint, _tileSize + _tilePadding.Size);
                 Rectangle paddedRec = new Rectangle(paddedPoint, _tileSize);
 
-                if (SelectedIndices.Contains(i))
-                {
-                    using (var brush = new SolidBrush(_tileHighlightColor))
-                    {
-                        e.Graphics.FillRectangle(brush, marginRec);
-                    }
-                }
-
                 if (DrawItem != null)
                 {
                     DrawItem(this, new DrawTileListItemEventArgs(e.Graphics, Font, borderRec, i, _focusIndex == i ? DrawItemState.Selected : DrawItemState.None));
@@ -640,12 +654,21 @@ namespace UoFiddler.Controls.UserControls.TileView
                     // TODO: Add text drawing?
                 }
 
+                if (SelectedIndices.Contains(i))
+                {
+                    using (var brush = new SolidBrush(Color.FromArgb((int)(_tileHighlightOpacity * 255), _tileHighlightColor)))
+                    {
+                        e.Graphics.FillRectangle(brush, marginRec);
+                    }
+                }
+
                 if (_tileBorder.Width > 0)
                 {
                     e.Graphics.DrawRectangle(_tileBorder, new Rectangle(marginRec.Location, marginRec.Size - single));
                 }
 
-                if (_focusIndex == i) // not sure yet on should it be in DrawItem or here...
+                // not sure yet on should it be in DrawItem or here...
+                if (_focusIndex == i)
                 {
                     Rectangle focusRec = new Rectangle(marginPoint + single, _tileSize + _tilePadding.Size);
                     ControlPaint.DrawFocusRectangle(e.Graphics, focusRec);
