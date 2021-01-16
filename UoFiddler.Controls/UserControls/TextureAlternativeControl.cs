@@ -409,7 +409,9 @@ namespace UoFiddler.Controls.UserControls
 
         private void UpdateLabels(int graphic)
         {
-            GraphicLabel.Text = string.Format("Graphic: 0x{0:X4} ({0}) [{1}x{1}]", graphic, Textures.GetTexture(graphic).Width);
+            var width = Textures.TestTexture(graphic) ? Textures.GetTexture(graphic).Width : 0;
+
+            GraphicLabel.Text = string.Format("Graphic: 0x{0:X4} ({0}) [{1}x{1}]", graphic, width);
         }
 
         private void TextureTileView_DrawItem(object sender, TileView.TileViewControl.DrawTileListItemEventArgs e)
