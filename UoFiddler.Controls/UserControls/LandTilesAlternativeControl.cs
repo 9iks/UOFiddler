@@ -73,7 +73,6 @@ namespace UoFiddler.Controls.UserControls
             _refMarker.SelectedGraphicId = graphic;
 
             return true;
-
         }
 
         /// <summary>
@@ -560,7 +559,7 @@ namespace UoFiddler.Controls.UserControls
                     }
                 }
 
-                MessageBox.Show($"All LandTiles saved to {dialog.SelectedPath}", "Saved", MessageBoxButtons.OK,
+                MessageBox.Show($"All land tiles saved to {dialog.SelectedPath}", "Saved", MessageBoxButtons.OK,
                     MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
             }
         }
