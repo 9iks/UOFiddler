@@ -834,6 +834,8 @@ namespace UoFiddler.Controls.UserControls
                     return;
                 }
 
+                Cursor.Current = Cursors.WaitCursor;
+
                 for (int i = 0; i < listView1.Items.Count; ++i)
                 {
                     int index = (int)listView1.Items[i].Tag;
@@ -848,6 +850,8 @@ namespace UoFiddler.Controls.UserControls
                         bit.Save(fileName, imageFormat);
                     }
                 }
+
+                Cursor.Current = Cursors.Default;
 
                 MessageBox.Show($"All land tiles saved to {dialog.SelectedPath}", "Saved", MessageBoxButtons.OK,
                     MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);

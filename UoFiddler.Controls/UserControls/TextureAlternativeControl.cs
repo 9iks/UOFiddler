@@ -479,6 +479,8 @@ namespace UoFiddler.Controls.UserControls
                     return;
                 }
 
+                Cursor.Current = Cursors.WaitCursor;
+
                 foreach (var index in _textureList)
                 {
                     if (!Textures.TestTexture(index))
@@ -492,6 +494,8 @@ namespace UoFiddler.Controls.UserControls
                         bit.Save(fileName, imageFormat);
                     }
                 }
+
+                Cursor.Current = Cursors.Default;
 
                 MessageBox.Show($"All textures saved to {dialog.SelectedPath}", "Saved", MessageBoxButtons.OK,
                     MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
