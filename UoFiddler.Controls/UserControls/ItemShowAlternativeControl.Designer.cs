@@ -183,7 +183,7 @@ namespace UoFiddler.Controls.UserControls
             this.ItemsTileView.TileBackgroundColor = System.Drawing.SystemColors.Window;
             this.ItemsTileView.TileBorderColor = System.Drawing.Color.Gray;
             this.ItemsTileView.TileBorderWidth = 1F;
-            this.ItemsTileView.TileHighlightColor = System.Drawing.Color.LightBlue;
+            this.ItemsTileView.TileHighlightColor = System.Drawing.SystemColors.Highlight;
             this.ItemsTileView.TileMargin = new System.Windows.Forms.Padding(2, 2, 0, 0);
             this.ItemsTileView.TilePadding = new System.Windows.Forms.Padding(1);
             this.ItemsTileView.TileSize = new System.Drawing.Size(96, 96);

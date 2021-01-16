@@ -186,7 +186,6 @@ namespace UoFiddler.Controls.UserControls
             // 
             // InsertText
             // 
-            this.InsertText.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.InsertText.Name = "InsertText";
             this.InsertText.Size = new System.Drawing.Size(100, 23);
             this.InsertText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDownInsert);
@@ -207,7 +206,7 @@ namespace UoFiddler.Controls.UserControls
             this.LandTilesToolStrip.Location = new System.Drawing.Point(0, 0);
             this.LandTilesToolStrip.Name = "LandTilesToolStrip";
             this.LandTilesToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.LandTilesToolStrip.Size = new System.Drawing.Size(607, 25);
+            this.LandTilesToolStrip.Size = new System.Drawing.Size(610, 25);
             this.LandTilesToolStrip.TabIndex = 5;
             // 
             // NameLabel
@@ -327,12 +326,12 @@ namespace UoFiddler.Controls.UserControls
             this.LandTilesTileView.Location = new System.Drawing.Point(0, 25);
             this.LandTilesTileView.MultiSelect = false;
             this.LandTilesTileView.Name = "LandTilesTileView";
-            this.LandTilesTileView.Size = new System.Drawing.Size(607, 317);
+            this.LandTilesTileView.Size = new System.Drawing.Size(610, 321);
             this.LandTilesTileView.TabIndex = 8;
             this.LandTilesTileView.TileBackgroundColor = System.Drawing.SystemColors.Window;
             this.LandTilesTileView.TileBorderColor = System.Drawing.Color.Gray;
             this.LandTilesTileView.TileBorderWidth = 1F;
-            this.LandTilesTileView.TileHighlightColor = System.Drawing.Color.LightBlue;
+            this.LandTilesTileView.TileHighlightColor = System.Drawing.SystemColors.Highlight;
             this.LandTilesTileView.TileMargin = new System.Windows.Forms.Padding(2, 2, 0, 0);
             this.LandTilesTileView.TilePadding = new System.Windows.Forms.Padding(1);
             this.LandTilesTileView.TileSize = new System.Drawing.Size(44, 44);
@@ -348,7 +347,7 @@ namespace UoFiddler.Controls.UserControls
             this.Controls.Add(this.LandTilesToolStrip);
             this.DoubleBuffered = true;
             this.Name = "LandTilesAlternativeControl";
-            this.Size = new System.Drawing.Size(607, 342);
+            this.Size = new System.Drawing.Size(610, 346);
             this.Load += new System.EventHandler(this.OnLoad);
             this.LandTilesContextMenuStrip.ResumeLayout(false);
             this.LandTilesToolStrip.ResumeLayout(false);

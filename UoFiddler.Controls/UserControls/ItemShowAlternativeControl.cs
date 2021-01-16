@@ -94,13 +94,14 @@ namespace UoFiddler.Controls.UserControls
                 RefMarker.OnLoad(RefMarker, EventArgs.Empty);
             }
 
-            if (RefMarker._itemList.Any(t => t == graphic))
+            if (RefMarker._itemList.All(t => t != graphic))
             {
-                RefMarker.SelectedGraphicId = graphic;
-                return true;
+                return false;
             }
 
-            return false;
+            RefMarker.SelectedGraphicId = graphic;
+
+            return true;
         }
 
         /// <summary>

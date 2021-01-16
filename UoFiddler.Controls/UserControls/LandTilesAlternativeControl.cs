@@ -38,20 +38,18 @@ namespace UoFiddler.Controls.UserControls
 
         public bool IsLoaded { get; private set; }
 
+        private static LandTilesAlternativeControl _refMarker;
+        private int _selectedGraphicId = -1;
         private readonly List<int> _tileList = new List<int>();
 
-        private int _selectedLandIndex = -1;
-
-        private static LandTilesAlternativeControl _refMarker;
-
-        public int Selected
+        public int SelectedGraphicId
         {
-            get => _selectedLandIndex;
+            get => _selectedGraphicId;
             set
             {
-                _selectedLandIndex = value < 0 ? 0 : value;
-                UpdateToolStripLabels(_selectedLandIndex);
-                LandTilesTileView.FocusIndex = _tileList.IndexOf(_selectedLandIndex);
+                _selectedGraphicId = value < 0 ? 0 : value;
+                UpdateToolStripLabels(_selectedGraphicId);
+                LandTilesTileView.FocusIndex = _tileList.IndexOf(_selectedGraphicId);
             }
         }
 
@@ -67,13 +65,15 @@ namespace UoFiddler.Controls.UserControls
                 _refMarker.OnLoad(_refMarker, EventArgs.Empty);
             }
 
-            if (_refMarker._tileList.Any(t => t == graphic))
+            if (_refMarker._tileList.All(t => t != graphic))
             {
-                _refMarker.Selected = graphic;
-                return true;
+                return false;
             }
 
-            return false;
+            _refMarker.SelectedGraphicId = graphic;
+
+            return true;
+
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace UoFiddler.Controls.UserControls
             int index = 0;
             if (next)
             {
-                if (_refMarker._selectedLandIndex >= 0)
+                if (_refMarker._selectedGraphicId >= 0)
                 {
-                    index = _refMarker._tileList.IndexOf(_refMarker._selectedLandIndex) + 1;
+                    index = _refMarker._tileList.IndexOf(_refMarker._selectedGraphicId) + 1;
                 }
 
                 if (index >= _refMarker._tileList.Count)
@@ -106,7 +106,7 @@ namespace UoFiddler.Controls.UserControls
                     continue;
                 }
 
-                _refMarker.Selected = _refMarker._tileList[i];
+                _refMarker.SelectedGraphicId = _refMarker._tileList[i];
                 return true;
             }
 
@@ -123,7 +123,7 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-            _selectedLandIndex = -1;
+            _selectedGraphicId = -1;
             _tileList.Clear();
 
             OnLoad(this, new MyEventArgs(MyEventArgs.Types.ForceReload));
@@ -199,7 +199,7 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-            if (_selectedLandIndex != id)
+            if (_selectedGraphicId != id)
             {
                 return;
             }
@@ -277,16 +277,16 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickFindFree(object sender, EventArgs e)
         {
-            int id = _selectedLandIndex;
+            int id = _selectedGraphicId;
             ++id;
-            for (int i = _tileList.IndexOf(_selectedLandIndex) + 1; i < _tileList.Count; ++i, ++id)
+            for (int i = _tileList.IndexOf(_selectedGraphicId) + 1; i < _tileList.Count; ++i, ++id)
             {
                 if (id >= _tileList[i])
                 {
                     continue;
                 }
 
-                Selected = _tileList[i];
+                SelectedGraphicId = _tileList[i];
                 break;
             }
         }
@@ -294,17 +294,17 @@ namespace UoFiddler.Controls.UserControls
         private void OnClickRemove(object sender, EventArgs e)
         {
             DialogResult result =
-                        MessageBox.Show($"Are you sure to remove {_selectedLandIndex}", "Save",
+                        MessageBox.Show($"Are you sure to remove {_selectedGraphicId}", "Save",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
             if (result != DialogResult.Yes)
             {
                 return;
             }
 
-            Art.RemoveLand(_selectedLandIndex);
-            ControlEvents.FireLandTileChangeEvent(this, _selectedLandIndex);
-            _tileList.Remove(_selectedLandIndex);
-            Selected = --_selectedLandIndex;
+            Art.RemoveLand(_selectedGraphicId);
+            ControlEvents.FireLandTileChangeEvent(this, _selectedGraphicId);
+            _tileList.Remove(_selectedGraphicId);
+            SelectedGraphicId = --_selectedGraphicId;
             LandTilesTileView.VirtualListSize = _tileList.Count;
             LandTilesTileView.Invalidate();
             Options.ChangedUltimaClass["Art"] = true;
@@ -312,7 +312,7 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickReplace(object sender, EventArgs e)
         {
-            if (_selectedLandIndex < 0)
+            if (_selectedGraphicId < 0)
             {
                 return;
             }
@@ -334,8 +334,8 @@ namespace UoFiddler.Controls.UserControls
                     bmp = Utils.ConvertBmp(bmp);
                 }
 
-                Art.ReplaceLand(_selectedLandIndex, bmp);
-                ControlEvents.FireLandTileChangeEvent(this, _selectedLandIndex);
+                Art.ReplaceLand(_selectedGraphicId, bmp);
+                ControlEvents.FireLandTileChangeEvent(this, _selectedGraphicId);
                 LandTilesTileView.Invalidate();
                 Options.ChangedUltimaClass["Art"] = true;
             }
@@ -415,8 +415,10 @@ namespace UoFiddler.Controls.UserControls
                     _tileList.Add(index);
                 }
 
+                LandTilesTileView.VirtualListSize = _tileList.Count;
                 LandTilesTileView.Invalidate();
-                Selected = index;
+                SelectedGraphicId = index;
+
                 Options.ChangedUltimaClass["Art"] = true;
             }
         }
@@ -443,42 +445,42 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickExportBmp(object sender, EventArgs e)
         {
-            if (_selectedLandIndex < 0)
+            if (_selectedGraphicId < 0)
             {
                 return;
             }
 
-            ExportLandTileImage(_selectedLandIndex, ImageFormat.Bmp);
+            ExportLandTileImage(_selectedGraphicId, ImageFormat.Bmp);
         }
 
         private void OnClickExportTiff(object sender, EventArgs e)
         {
-            if (_selectedLandIndex < 0)
+            if (_selectedGraphicId < 0)
             {
                 return;
             }
 
-            ExportLandTileImage(_selectedLandIndex, ImageFormat.Tiff);
+            ExportLandTileImage(_selectedGraphicId, ImageFormat.Tiff);
         }
 
         private void OnClickExportJpg(object sender, EventArgs e)
         {
-            if (_selectedLandIndex < 0)
+            if (_selectedGraphicId < 0)
             {
                 return;
             }
 
-            ExportLandTileImage(_selectedLandIndex, ImageFormat.Jpeg);
+            ExportLandTileImage(_selectedGraphicId, ImageFormat.Jpeg);
         }
 
         private void OnClickExportPng(object sender, EventArgs e)
         {
-            if (_selectedLandIndex < 0)
+            if (_selectedGraphicId < 0)
             {
                 return;
             }
 
-            ExportLandTileImage(_selectedLandIndex, ImageFormat.Png);
+            ExportLandTileImage(_selectedGraphicId, ImageFormat.Png);
         }
 
         private static void ExportLandTileImage(int index, ImageFormat imageFormat)
@@ -497,17 +499,17 @@ namespace UoFiddler.Controls.UserControls
 
         private void OnClickSelectTiledata(object sender, EventArgs e)
         {
-            if (_selectedLandIndex >= 0)
+            if (_selectedGraphicId >= 0)
             {
-                TileDataControl.Select(_selectedLandIndex, true);
+                TileDataControl.Select(_selectedGraphicId, true);
             }
         }
 
         private void OnClickSelectRadarCol(object sender, EventArgs e)
         {
-            if (_selectedLandIndex >= 0)
+            if (_selectedGraphicId >= 0)
             {
-                RadarColorControl.Select(_selectedLandIndex, true);
+                RadarColorControl.Select(_selectedGraphicId, true);
             }
         }
 
@@ -601,7 +603,7 @@ namespace UoFiddler.Controls.UserControls
                 return;
             }
 
-            Selected = e.ItemIndex < 0 || e.ItemIndex > _tileList.Count
+            SelectedGraphicId = e.ItemIndex < 0 || e.ItemIndex > _tileList.Count
                 ? _tileList[0]
                 : _tileList[e.ItemIndex];
         }
