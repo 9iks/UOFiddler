@@ -106,14 +106,14 @@ namespace UoFiddler.Controls.UserControls
                     treeView.Nodes[0].Nodes.Add(node);
                 }
 
-                node = new TreeNode("Unicode")
-                {
-                    Tag = 1
-                };
-                treeView.Nodes.Add(node);
-
                 if (LoadUnicodeFontsCheckBox.Checked)
                 {
+                    node = new TreeNode("Unicode")
+                    {
+                        Tag = 1
+                    };
+                    treeView.Nodes.Add(node);
+
                     for (int i = 0; i < UnicodeFonts.Fonts.Length; ++i)
                     {
                         if (UnicodeFonts.Fonts[i] == null)
